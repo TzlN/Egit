@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="bankcard" >
+  <resultMap id="BaseResultMap" type="com.tzl.entity.BankCard" >
+    <id column="bankCard_id" property="bankcardId" jdbcType="INTEGER" />
+    <result column="bank_name" property="bankName" jdbcType="VARCHAR" />
+    <result column="bank_des" property="bankDes" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    bankCard_id, bank_name, bank_des
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from bankcard
+    where bankCard_id = #{bankcardId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from bankcard
+    where bankCard_id = #{bankcardId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tzl.entity.BankCard" >
+    insert into bankcard (bankCard_id, bank_name, bank_des
+      )
+    values (#{bankcardId,jdbcType=INTEGER}, #{bankName,jdbcType=VARCHAR}, #{bankDes,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tzl.entity.BankCard" >
+    insert into bankcard
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="bankcardId != null" >
+        bankCard_id,
+      </if>
+      <if test="bankName != null" >
+        bank_name,
+      </if>
+      <if test="bankDes != null" >
+        bank_des,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="bankcardId != null" >
+        #{bankcardId,jdbcType=INTEGER},
+      </if>
+      <if test="bankName != null" >
+        #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankDes != null" >
+        #{bankDes,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tzl.entity.BankCard" >
+    update bankcard
+    <set >
+      <if test="bankName != null" >
+        bank_name = #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankDes != null" >
+        bank_des = #{bankDes,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where bankCard_id = #{bankcardId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tzl.entity.BankCard" >
+    update bankcard
+    set bank_name = #{bankName,jdbcType=VARCHAR},
+      bank_des = #{bankDes,jdbcType=VARCHAR}
+    where bankCard_id = #{bankcardId,jdbcType=INTEGER}
+  </update>
+</mapper>

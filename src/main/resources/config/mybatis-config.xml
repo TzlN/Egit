@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	
+	<!-- 数据库配置 -->
+	<properties resource="config/db.properties"></properties>
+	<!--配置别名包用于给实体类直接加别名  -->
+	<typeAliases>
+		<package name="com.tzl.entity"/>
+	</typeAliases>
+
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC"/>
+				<dataSource type="POOLED">
+				<property name="driver" value="${jdbcDriver}"/>
+				<property name="url" value="${jdbcUrl}"/>
+				<property name="username" value="${username}"/>
+				<property name="password" value="${password}"/>
+				</dataSource>
+		</environment>
+	</environments>
+	<mappers>
+		 <mapper resource="com/tzl/mapper/UserMapper.xml"/> 
+		 <mapper resource="com/tzl/mapper/CityMapper.xml"/> 
+		 <mapper resource="com/tzl/mapper/BankCardMapper.xml"/> 
+	</mappers>
+</configuration>

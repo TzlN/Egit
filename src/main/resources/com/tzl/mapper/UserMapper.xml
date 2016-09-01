@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tzl.user.mapper.UserMapper" >
+	<!-- namespace 对应dao层 -->
+  <resultMap id="BaseResultMap" type="User" >
+    <id column="user_id" property="id" jdbcType="INTEGER" />
+    <result column="user_name" property="name" jdbcType="VARCHAR" />
+    <result column="age" property="age" jdbcType="INTEGER" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="birthday" property="birthday" jdbcType="DATE" />
+  </resultMap>
+  <!-- 一对一 -->
+  <resultMap type="User" id="One2One" extends="BaseResultMap">
+  		<association property="city" javaType="City">
+  			<id column="city_id" property="cityId" jdbcType="INTEGER" />
+		    <result column="province" property="province" jdbcType="VARCHAR" />
+		    <result column="city_name" property="cityName" jdbcType="VARCHAR" />
+		    <result column="user_id" property="userId" jdbcType="INTEGER" />
+  		</association>
+  </resultMap>
+  <!-- 多对多 和一对多的配置一致 -->
+  <resultMap type="User" id="Many2Many" extends="BaseResultMap">
+  		<collection property="orders" ofType="Orders">
+  			<id column="order_id" property="orderId" jdbcType="INTEGER" />
+		    <result column="order_name" property="orderName" jdbcType="VARCHAR" />
+		    <result column="order_date" property="orderDate" jdbcType="TIMESTAMP" />
+  		</collection>
+  </resultMap>
+  <!-- 一对多 -->
+  <resultMap type="User" id="One2Many" extends="BaseResultMap">
+  		<association property="city" javaType="City">
+  			<id column="city_id" property="cityId" jdbcType="INTEGER" />
+		    <result column="province" property="province" jdbcType="VARCHAR" />
+		    <result column="city_name" property="cityName" jdbcType="VARCHAR" />
+		    <result column="user_id" property="userId" jdbcType="INTEGER" />
+  		</association>
+  		<collection property="bankCards" ofType="BankCard">
+  			<id column="bankCard_id" property="bankcardId" jdbcType="INTEGER" />
+		    <result column="bank_name" property="bankName" jdbcType="VARCHAR" />
+		    <result column="bank_des" property="bankDes" jdbcType="VARCHAR" />
+  		</collection>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, name, age, address, birthday
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select *
+    from user
+    where user_id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectUserAndCity" resultMap="One2One" parameterType="java.lang.Integer" >
+    select *
+    from user u , city c
+    where u.user_id = c.user_id and u.user_id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectUserInfo" resultMap="One2Many" parameterType="java.lang.Integer" >
+    select *
+    from user u , city c , bankCard b
+    where u.user_id = c.user_id and u.user_id = b.user_id
+    		and u.user_id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectUserOrder" resultMap="Many2Many" parameterType="java.lang.Integer" >
+    select *
+    from user u left join user_order uo on u.user_id = uo.user_id
+    	 left join orders o on uo.order_id = o.order_id
+    where  u.user_id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user
+    where user_id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insert" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+    insert into user (id, name, age, 
+      address, birthday)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{age,jdbcType=INTEGER}, 
+      #{address,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE})
+  </insert>
+  
+  
+  
+  <select id="dynamicSelect" parameterType="map" resultMap="BaseResultMap">
+  		select * from user
+  		<where>
+  			<if test="id != null">
+  				user_id = #{id}
+  			</if>
+  			<if test="name != null">
+  				and user_name like '%${name}%'
+  			</if>
+  			<if test="age != null">
+  				and age = #{age}
+  			</if>
+  			<if test="address != null">
+  				and address = '%${address}%'
+  			</if>
+  			<if test="birthday != null">
+  				and birthday <![CDATA[>]]> #{birthday}
+  			</if>
+  			<if test =" start != null and pageSize != null">
+		  		limit #{start},#{pageSize}
+  			</if>
+  		</where>
+  </select>
+  
+  <select id="selectTotal" parameterType="map" resultType="Integer">
+  		select count(*) from user
+  		<where>
+  			<if test="id != null">
+  				user_id = #{id}
+  			</if>
+  			<if test="name != null">
+  				and user_name like '%${name}%'
+  			</if>
+  			<if test="age != null">
+  				and age = #{age}
+  			</if>
+  			<if test="address != null">
+  				and address = '%${address}%'
+  			</if>
+  			<if test="birthday != null">
+  				and birthday <![CDATA[>]]> #{birthday}
+  			</if>
+  		</where>
+  </select>
+  
+  <insert id="insertSelective" parameterType="User" >
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="age != null" >
+        age,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="birthday != null" >
+        birthday,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null" >
+        #{age,jdbcType=INTEGER},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null" >
+        #{birthday,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="User" >
+    update user
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null" >
+        age = #{age,jdbcType=INTEGER},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null" >
+        birthday = #{birthday,jdbcType=DATE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="User" >
+    update user
+    set name = #{name,jdbcType=VARCHAR},
+      age = #{age,jdbcType=INTEGER},
+      address = #{address,jdbcType=VARCHAR},
+      birthday = #{birthday,jdbcType=DATE}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
