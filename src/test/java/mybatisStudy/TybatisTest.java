@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mybatisStudy.Utils.Pager;
-
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -38,7 +36,6 @@ public class TybatisTest {
 		map.put("id", 1);
 //		map.put("name", "ËÄ");
 		map.put("birthday", stringToDate("16-07-25"));
-		Pager pager = new Pager();
 //		User user = session.selectOne("dynamicSelect",map);
 		List<User> users = session.selectList("dynamicSelect",map);
 		System.out.println(users.size());
@@ -65,18 +62,17 @@ public class TybatisTest {
 //		map.put("name", "ËÄ");
 		map.put("birthday", stringToDate("12-07-25"));
 		
-		Integer total = session.selectOne("selectTotal", map);
+//		Integer total = session.selectOne("selectTotal", map);
 		int page = 1;
 		int pageSize = 3;
 		
-		int totalPage = total%pageSize == 0 ? total/pageSize : total/pageSize +1;
+//		int totalPage = total%pageSize == 0 ? total/pageSize : total/pageSize +1;
 		int start = (page-1)*pageSize;
 		map.put("start", start);
 		map.put("pageSize", pageSize);
 		
 		List<User> users = session.selectList("dynamicSelect", map);
 		System.out.println(users);
-//		total
 		
 	}
 	
