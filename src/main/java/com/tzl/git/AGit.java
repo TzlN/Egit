@@ -6,6 +6,5 @@ public class AGit {
 		int d = 1;
 		int c = i/d;
 		System.out.println(c);
-		System.out.println(c);
 	}
 }

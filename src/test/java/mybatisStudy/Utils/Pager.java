@@ -56,6 +56,13 @@ public class Pager {
 	public void setTotalPage(Integer totalPage) {
 		this.totalPage = totalPage;
 	}
+
+	@Override
+	public String toString() {
+		return "Pager [totals=" + totals + ", pageSize=" + pageSize
+				+ ", pageStart=" + pageStart + ", page=" + page
+				+ ", totalPage=" + totalPage + "]";
+	}
 	
 	
 	
